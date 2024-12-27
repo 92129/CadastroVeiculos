@@ -1,0 +1,6 @@
+@CadastroVeiculos_HostAddress = http://localhost:5164
+
+GET {{CadastroVeiculos_HostAddress}}/CadastroVeiculos/
+Accept: application/json
+
+###

@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Veículos</title>
+    <script src="https://cdn.jsdelivr.net/npm/angular@1.8.3/angular.min.js"></script>
+</head>
+<body ng-app="appVeiculos">
+    <div ng-controller="ControleVeiculos">
+        <h1>Gerenciador de Veículos</h1>
+        <form ng-submit="adicionarVeiculo()">
+            <input type="text" ng-model="novoVeiculo.marca" placeholder="Marca" required />
+            <input type="text" ng-model="novoVeiculo.modelo" placeholder="Modelo" required />
+            <button type="submit">Adicionar Veículo</button>
+        </form>
+        <ul>
+            <li ng-repeat="veiculo in veiculos">{{veiculo.marca}} - {{veiculo.modelo}}</li>
+        </ul>
+    </div>
+
+    <script>
+        const app = angular.module('appVeiculos', []);
+
+        app.controller('ControleVeiculos', function ($scope, $http) {
+            $scope.veiculos = [];
+            $scope.novoVeiculo = {};
+
+            $scope.carregarVeiculos = function () {
+                $http.get('http://localhost:5164/veiculos').then(response => {
+                    $scope.veiculos = response.data;
+                }, error => {
+                    console.error('Erro ao carregar veículos:', error);
+                });
+            };
+
+            $scope.adicionarVeiculo = function () {
+                if ($scope.novoVeiculo.marca && $scope.novoVeiculo.modelo) {
+                    $http.post('http://localhost:5164/veiculos', $scope.novoVeiculo).then(() => {
+                        $scope.carregarVeiculos();
+                        $scope.novoVeiculo = {};
+                    }, error => {
+                        console.error('Erro ao adicionar veículo:', error);
+                    });
+                }
+            };
+
+            $scope.carregarVeiculos();
+        });
+    </script>
+</body>
+</html>
